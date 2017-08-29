@@ -3,7 +3,7 @@ package debugo
 import (
 	"testing"
 
-	. "github.com/Cappta/Cappta.Common.Go/Testing"
+	. "github.com/Cappta/gohelpconvey"
 	. "github.com/smartystreets/goconvey/convey"
 )
 

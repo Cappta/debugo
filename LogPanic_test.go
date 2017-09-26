@@ -2,14 +2,16 @@ package debugo
 
 import (
 	"bytes"
+	"log"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
 )
 
-func TestLogPanicInto(t *testing.T) {
+func TestLogPanic(t *testing.T) {
 	Convey("Given a panic", t, func() {
 		buffer := bytes.NewBuffer(make([]byte, 0, 4096))
+		log.SetOutput(buffer)
 		func() {
 			defer func() {
 				recovered := recover()
@@ -18,7 +20,7 @@ func TestLogPanicInto(t *testing.T) {
 				})
 			}()
 			func() {
-				defer LogPanicInto(buffer)
+				defer LogPanic()
 				func() {
 					AFunctionThatWillPanic()
 				}()

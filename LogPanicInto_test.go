@@ -9,26 +9,28 @@ import (
 )
 
 func TestLogPanicInto(t *testing.T) {
-	buffer := bytes.NewBuffer(make([]byte, 0, 4096))
-	func() {
-		defer func() {
-			recovered := recover()
-			Convey("Then Recovered value should not be nil", t, func() {
-				So(recovered, ShouldNotBeNil)
-			})
-		}()
+	Convey("Given a panic", t, func() {
+		buffer := bytes.NewBuffer(make([]byte, 0, 4096))
 		func() {
-			defer LogPanicInto(buffer)
+			defer func() {
+				recovered := recover()
+				Convey("Then Recovered value should not be nil", func() {
+					So(recovered, ShouldNotBeNil)
+				})
+			}()
 			func() {
-				AFunctionThatWillPanic()
+				defer LogPanicInto(buffer)
+				func() {
+					AFunctionThatWillPanic()
+				}()
 			}()
 		}()
-	}()
-	Convey("Then buffer's string value should contain substring 'AFunctionThatWillPanic'", t, func() {
-		So(buffer.String(), ShouldContainSubstring, "AFunctionThatWillPanic")
-	})
-	Convey("Then buffer's string value should contain substring 'You were warned'", t, func() {
-		So(buffer.String(), ShouldContainSubstring, "You were warned")
+		Convey("Then buffer's string value should contain substring 'AFunctionThatWillPanic'", func() {
+			So(buffer.String(), ShouldContainSubstring, "AFunctionThatWillPanic")
+		})
+		Convey("Then buffer's string value should contain substring 'You were warned'", func() {
+			So(buffer.String(), ShouldContainSubstring, "You were warned")
+		})
 	})
 }
 
